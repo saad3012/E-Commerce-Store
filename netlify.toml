@@ -1,0 +1,13 @@
+{
+  "build": {
+    "command": "npm install && npm run build",
+    "functions": "backend",
+    "publish": "dist"
+  },
+  "env": {
+    "VITE_API_URL": {
+      "description": "Your backend API URL",
+      "required": true
+    }
+  }
+}

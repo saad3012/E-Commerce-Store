@@ -101,8 +101,6 @@ button:disabled {
 @media (max-width: 768px) {
   .form {
     padding: 1.5rem;
-  }
-}
     max-width: 90%;
   }
   button {

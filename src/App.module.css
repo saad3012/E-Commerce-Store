@@ -1,0 +1,30 @@
+.app {
+  background: linear-gradient(135deg, #f3f5ff, #dce7ff);
+  min-height: 100vh;
+  padding: 2rem;
+  font-family: "Inter", system-ui, sans-serif;
+  color: #1f2937;
+}
+
+.header {
+  text-align: center;
+  font-size: 2.2rem;
+  margin-bottom: 2rem;
+  color: #2563eb;
+}
+
+.loading {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #6b7280;
+  margin: 2rem 0;
+}
+
+.error {
+  background-color: #fee2e2;
+  color: #991b1b;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}

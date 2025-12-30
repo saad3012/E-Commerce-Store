@@ -15,5 +15,5 @@ export class CreateProductDto {
 
   @IsString()
   @IsOptional()
-  image?: string;
+  image?: string; // Base64 encoded image
 }

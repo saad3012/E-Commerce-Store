@@ -9,13 +9,19 @@ export const api = {
     return response.json();
   },
 
-  async createProduct(product) {
+  async createProduct(product, imageFile) {
+    const formData = new FormData();
+    formData.append('name', product.name);
+    formData.append('description', product.description);
+    formData.append('price', product.price);
+    
+    if (imageFile) {
+      formData.append('image', imageFile);
+    }
+
     const response = await fetch(`${API_URL}/products`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(product),
+      body: formData,
     });
     if (!response.ok) {
       throw new Error('Failed to create product');

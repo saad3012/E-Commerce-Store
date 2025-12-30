@@ -1,13 +1,6 @@
-{
-  "build": {
-    "command": "npm install && npm run build",
-    "functions": "backend",
-    "publish": "dist"
-  },
-  "env": {
-    "VITE_API_URL": {
-      "description": "Your backend API URL",
-      "required": true
-    }
-  }
-}
+[build]
+command = "npm install && npm run build"
+publish = "dist"
+
+[env.production]
+VITE_API_URL = "http://localhost:3001"

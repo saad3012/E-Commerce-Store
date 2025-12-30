@@ -14,8 +14,8 @@ export class Product {
   @Column()
   price: string;
 
-  @Column({ nullable: true })
-  image: string;
+  @Column({ type: 'longtext', nullable: true })
+  image: string; // Base64 encoded image
 
   @CreateDateColumn()
   createdAt: Date;

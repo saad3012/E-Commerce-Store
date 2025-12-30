@@ -1,27 +1,23 @@
 
 import React, { useState, useEffect } from "react";
+import { api } from "../api/products";
 import styles from "./ProductForm.module.css";
 
 function ProductForm({ onAdd }) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
-  const [image, setImage] = useState("");
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState("");
   const [isValid, setIsValid] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    
     const nameOk = name.trim().length > 0;
     const priceOk = price.trim().length === 0 || /^\$?\d+(\.\d{1,2})?$/.test(price.trim());
     setIsValid(nameOk && priceOk);
   }, [name, price]);
-
-  useEffect(() => {
-
-    console.log("ProductForm fields:", { name, description, price, image });
-  }, [name, description, price, image]);
 
   useEffect(() => {
     let t;
@@ -31,6 +27,18 @@ function ProductForm({ onAdd }) {
     return () => clearTimeout(t);
   }, [success]);
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setImagePreview(event.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleAdd = async () => {
     if (!isValid || isSubmitting) return;
     setIsSubmitting(true);
@@ -39,19 +47,18 @@ function ProductForm({ onAdd }) {
         name: name.trim(),
         description: description.trim(),
         price: price.trim() || "$0",
-        image: image.trim() || "",
       };
-      if (typeof onAdd === "function") {
-        onAdd(newProduct);
-      } else {
-        console.log("Added product (no onAdd provided):", newProduct);
-      }
-    
+      
+      await onAdd(newProduct, imageFile);
+      
       setName("");
       setDescription("");
       setPrice("");
-      setImage("");
+      setImageFile(null);
+      setImagePreview("");
       setSuccess(true);
+    } catch (err) {
+      console.error("Error adding product:", err);
     } finally {
       setIsSubmitting(false);
     }
@@ -83,12 +90,21 @@ function ProductForm({ onAdd }) {
         value={price}
         onChange={(e) => setPrice(e.target.value)}
       />
-      <input
-        type="text"
-        placeholder="Image URL (optional)"
-        value={image}
-        onChange={(e) => setImage(e.target.value)}
-      />
+      
+      <div className={styles.imageInput}>
+        <label htmlFor="imageFile">Upload Image:</label>
+        <input
+          id="imageFile"
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+        />
+        {imagePreview && (
+          <div className={styles.preview}>
+            <img src={imagePreview} alt="Preview" />
+          </div>
+        )}
+      </div>
 
       <div className={styles.actions}>
         <button type="submit" disabled={!isValid || isSubmitting}>

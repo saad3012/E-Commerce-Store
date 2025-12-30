@@ -29,15 +29,14 @@ function App() {
     }
   };
 
-  const handleAdd = async (product) => {
+  const handleAdd = async (product, imageFile) => {
     try {
       const sanitized = {
         name: product.name?.trim() || "Untitled Product",
         description: product.description?.trim() || "",
         price: product.price?.trim() || "$0",
-        image: product.image?.trim() || keyboard,
       };
-      const newProduct = await api.createProduct(sanitized);
+      const newProduct = await api.createProduct(sanitized, imageFile);
       setProducts((prev) => [newProduct, ...prev]);
     } catch (err) {
       console.error('Failed to add product:', err);

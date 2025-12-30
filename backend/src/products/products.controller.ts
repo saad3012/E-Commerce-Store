@@ -8,10 +8,27 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  UseInterceptors,
+  UploadedFile,
+  Static,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+
+const storage = diskStorage({
+  destination: './uploads',
+  filename: (req, file, cb) => {
+    const randomName = Array(32)
+      .fill(null)
+      .map(() => Math.round(Math.random() * 16).toString(16))
+      .join('');
+    cb(null, `${randomName}${extname(file.originalname)}`);
+  },
+});
 
 @Controller('products')
 export class ProductsController {
@@ -19,7 +36,14 @@ export class ProductsController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createProductDto: CreateProductDto) {
+  @UseInterceptors(FileInterceptor('image', { storage }))
+  create(
+    @Body() createProductDto: CreateProductDto,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    if (file) {
+      createProductDto.image = `/uploads/${file.filename}`;
+    }
     return this.productsService.create(createProductDto);
   }
 
